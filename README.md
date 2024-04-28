@@ -1,2 +1,3 @@
 # VidyascapeLeaderboardTracker
- for acer
+ for acer, can't believe this rat made me code in javascript
+ 
