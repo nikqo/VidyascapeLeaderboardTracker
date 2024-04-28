@@ -19,16 +19,20 @@ async function compile_payload() {
         const { titleSuffix, descriptionIntro, nextUpdateTime } = await format_body(type);
 
         const emojis = ['🥇', '🥈', '🥉'];
-        console.log(leaderboard)
-
+        
+        let newRecordPing = '';
         const fields = leaderboard.map((item, index) => {
             if (index < emojis.length) {
                 const recordText = item.newRecord ? ' **( NEW RECORD!! )**' : '';
+                if (item.newRecord) {
+                    newRecordPing = item.username;
+                }
                 return {
                     name: `${emojis[index]} ${item.username}`,
                     value: `**Rank**: ${item.overall_rank}\n**Total XP**: ${item.overall_diff.toLocaleString()}${recordText}`,
                     inline: false
                 };
+                
             }
         }).filter(field => field !== undefined);
 
@@ -43,20 +47,25 @@ async function compile_payload() {
                 hour: '2-digit', minute: '2-digit', second: '2-digit',
                 hour12: true
             }));
-
+        
         fields.forEach(field => embed.addField(field.name, field.value, field.inline));
 
         const embedObject = embed.build(leaderboard);
 
-        resolve(embedObject);
+        const payload = {
+            content: newRecordPing ? `<@155803196382511104> New record set!` : '',
+            embeds: embedObject
+        };
 
-        console.log(embedObject);
-    })
+        resolve(payload)
+        
+    });
 };
 
 async function main() {
-    let embed = await compile_payload();
+    let payload = await compile_payload();
     const webhook_url = "https://discord.com/api/webhooks/1233062280925806622/RqJgqFh4L5iOfQQwzCUBjQTmFRKYY_CQAwwA78LOlQmn32sLruDLtqTQX3s1_xuJV19l";
+    console.log(payload);
 
     try {
         const response = await fetch(webhook_url + '?wait=true', {
@@ -64,7 +73,7 @@ async function main() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ embeds: [embed] }),
+            body: JSON.stringify(payload),
             
         });
 

@@ -95,7 +95,7 @@ export class EmbedBuilder {
     }
 
     build() {
-        return { ...this.embed };
+        return [this.embed];
     }
 }
 
