@@ -5,7 +5,8 @@ import { fileURLToPath } from 'url';
 function scheduleTask(type) {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
-    const scriptPath = join(__dirname, 'schedule.bat');
+    const scriptPath = join(__dirname, '..', 'schedule.bat');
+
     const startTime = `00:00:00`;
 
     const taskOptions = {
